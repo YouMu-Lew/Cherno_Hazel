@@ -1,0 +1,3 @@
+[submodule "Cherno_Hazel/vendor/spdlog"]
+	path = Cherno_Hazel/vendor/spdlog
+	url = https://github.com/gabime/spdlog

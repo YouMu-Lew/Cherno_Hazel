@@ -1,6 +1,7 @@
 #pragma once
 
 #ifdef HZ_PLATFORM_WINDOWS
+#include "spdlog\spdlog.h"
 
 extern Hazel::Application* Hazel::CreateApplication();
 
