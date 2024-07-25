@@ -14,6 +14,10 @@ Intermediates/
 **.vcxproj.user
 **.csproj
 
+
+# VSCode files and folder
+.vscode/
+
 # Directories
 Hazel/vendor/VulkanSDK
 Hazelnut/assets/cache
