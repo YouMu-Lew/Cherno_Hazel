@@ -141,10 +141,20 @@ function _make_custom_commands(target, vcxprojdir)
     -- add before commands
     -- we use irpairs(groups), because the last group that should be given the highest priority.
     local cmds_before = {}
+    -- 编译前复制 dll 文件
+    if target:name() == "Sandbox" then
+        cmds_before = {
+            {
+                kind = "cp",
+                srcpath = [[$(projectdir)\bin\mode-arch\Cherno_Hazel\Cherno_Hazel.dll]],
+                dstpath = [[$(projectdir)\bin\mode-arch\Sandbox\]]
+            }
+        }
+    end
     target_cmds.get_target_buildcmd(target, cmds_before, {suffix = "before", ignored_rules = ignored_rules})
-    target_cmds.get_target_buildcmd_sourcegroups(target, cmds_before, sourcegroups, {suffix = "before", ignored_rules = ignored_rules})
+    -- target_cmds.get_target_buildcmd_sourcegroups(target, cmds_before, sourcegroups, {suffix = "before", ignored_rules = ignored_rules})
     -- rule.on_buildcmd_files should also be executed before building the target, as cmake PRE_BUILD does not work.
-    target_cmds.get_target_buildcmd_sourcegroups(target, cmds_before, sourcegroups, {ignored_rules = ignored_rules})
+    -- target_cmds.get_target_buildcmd_sourcegroups(target, cmds_before, sourcegroups, {ignored_rules = ignored_rules})
 
     -- add after commands
     local cmds_after = {}

@@ -726,18 +726,24 @@ function _make_custom_commands_item(vcxprojfile, commands, suffix)
         vcxprojfile:print("<PreLinkEvent>")
     end
     vcxprojfile:print("<Message></Message>")
-    local cmdstr = "setlocal"
+    -- 注释了不必要的额外信息
+    -- local cmdstr = "setlocal"
+    local cmdstr = ""
     for _, command in ipairs(commands) do
         cmdstr = cmdstr .. "\n" .. command
-        cmdstr = cmdstr .. "\nif %errorlevel% neq 0 goto :xmEnd"
+        -- cmdstr = cmdstr .. "\nif %errorlevel% neq 0 goto :xmEnd"
     end
-    cmdstr = cmdstr .. "\n" .. [[:xmEnd
+    --[[cmdstr = cmdstr .. "\n" .. [[:xmEnd
 endlocal &amp; call :xmErrorLevel %errorlevel% &amp; goto :xmDone
 :xmErrorLevel
 exit /b %1
 :xmDone
 if %errorlevel% neq 0 goto :VCEnd]]
-    vcxprojfile:print("<Command>%s</Command>", cmdstr:replace("<", " 	&lt;"):replace(">", "&gt;"):replace("/Fo ", "/Fo"))
+    -- vcxprojfile:print("<Command>%s</Command>", cmdstr:replace("<", " 	&lt;"):replace(">", "&gt;"):replace("/Fo ", "/Fo"))
+    -- 字符特殊处理
+    -- '$' 在 XML 格式中会被替换为 '%24' 此处做了还原
+    -- '..\..' vs 中走的是绝对路径，此处为相对路径，故替换
+    vcxprojfile:print("<Command>%s</Command>", cmdstr:replace("%%24","$"):replace([[..\..\]],[[]]))
     if suffix == "after" or suffix == "after_link" then
         vcxprojfile:print("</PostBuildEvent>")
     elseif suffix == "before" then
@@ -750,6 +756,11 @@ end
 -- make custom commands
 function _make_custom_commands(vcxprojfile, target)
     for suffix, cmds in pairs(target.commands) do
+        -- 使用 $(mode) 格式替换时，出现了不同 mode 下均为相同字段
+        -- 故此处进行了单独替换
+        for _, command in ipairs(cmds) do
+            cmds[1] = command:replace("mode", target.mode):replace("arch", target.arch)
+        end
         _make_custom_commands_item(vcxprojfile, cmds, suffix)
     end
 end
