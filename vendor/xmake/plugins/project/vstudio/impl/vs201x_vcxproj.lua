@@ -743,7 +743,7 @@ if %errorlevel% neq 0 goto :VCEnd]]
     -- 字符特殊处理
     -- '$' 在 XML 格式中会被替换为 '%24' 此处做了还原
     -- '..\..' vs 中走的是绝对路径，此处为相对路径，故替换
-    vcxprojfile:print("<Command>%s</Command>", cmdstr:replace("%%24","$"):replace([[..\..\]],[[]]))
+    vcxprojfile:print("<Command>%s</Command>", cmdstr:replace("%%24","$"):replace([["..\]],[["]]))
     if suffix == "after" or suffix == "after_link" then
         vcxprojfile:print("</PostBuildEvent>")
     elseif suffix == "before" then

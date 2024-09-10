@@ -403,7 +403,7 @@ function make(outputdir, vsinfo)
     -- init solution directory
     -- 输出目录设置为根目录，确保 VS 能显示源文件目录
     -- vsinfo.solution_dir = path.join(outputdir, "vs" .. vsinfo.vstudio_version)
-    vsinfo.solution_dir = path.join(outputdir,"\\")
+    vsinfo.solution_dir = path.join(outputdir)
 
     -- init modes
     vsinfo.modes = _make_vsinfo_modes()
