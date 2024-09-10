@@ -16,7 +16,7 @@ target("Cherno_Hazel")
 
     add_includedirs("Cherno_Hazel/vendor/spdlog/include","Cherno_Hazel/src", {public = true}) -- 通过额外的{public|interface = true}属性设置，将includedirs导出给依赖的子target `Sandbox`
 
-    add_files("Cherno_Hazel/src/(**.cpp)")
+    add_files("Cherno_Hazel/src/**.cpp")
     add_headerfiles("Cherno_Hazel/src/(**.h)", {install = false}) -- 保留目录结构，并禁用默认的头文件安装，仅用于 vs project 文件列表展示、编译
 
     if is_plat("windows") then
@@ -30,8 +30,6 @@ target("Sandbox")
     set_objectdir("bin-int/$(mode)-$(arch)/Sandbox/")
 
     add_deps("Cherno_Hazel")
-
-    add_includedirs("Cherno_Hazel/src")
 
     add_files("Sandbox/src/**.cpp")
     add_headerfiles("Sandbox/src/(**.h)", {install = false})
