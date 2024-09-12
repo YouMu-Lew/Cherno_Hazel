@@ -8,6 +8,6 @@ A Game Engine named Hazel, which is created by The Cherno.
 
 # How to run Visual Studio project
 > Note: This project uses [xmake](https://github.com/xmake-io/xmake) for build management.
-1. run `Cherno_Hazel\GenerateVSProject.bat` to generate project files
-2. open `Cherno_Hazel\Cherno_Hazel.sln`
+1. run `GenerateVSProject.bat` to generate project files
+2. open `Cherno_Hazel.sln`
 3. press `F5` to run
