@@ -2,9 +2,6 @@
 
 #include "Hazel/Core.h"
 
-#include <string>
-#include <functional>
-
 namespace Hazel {
 
     // Events in Hazel are currently blocking, meaning when an event occurs it 
@@ -44,6 +41,7 @@ namespace Hazel {
         virtual EventType GetEventType() const = 0;
         virtual const char* GetName() const = 0;
         virtual int GetCategoryFlags() const = 0;
+        // Just for debugging
         virtual std::string ToString() const { return GetName(); }
 
         inline bool IsInCategory(EventCategory category) {

@@ -11,6 +11,8 @@ target("Cherno_Hazel")
     set_kind("shared")
     -- set_extension(".dll")
 
+    set_pcxxheader("Cherno_Hazel/src/hzpch.h")-- 预编译头文件
+
     set_targetdir("bin/$(mode)-$(arch)/Cherno_Hazel/")
     set_objectdir("bin-int/$(mode)-$(arch)/Cherno_Hazel/")
 
