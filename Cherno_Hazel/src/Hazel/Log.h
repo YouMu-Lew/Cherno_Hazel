@@ -1,9 +1,8 @@
 #pragma once
 
-#include <memory>
-
 #include "Core.h"
 #include "spdlog\spdlog.h"
+#include "spdlog\fmt\ostr.h" // 这段是关于自定义格式的说明
 
 namespace Hazel {
 

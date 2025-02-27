@@ -5,6 +5,14 @@ workspace "Cherno_Hazel"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- Include directories velative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Cherno_Hazel/vendor/GLFW/include"
+
+-- 类似 cpp include 
+-- 本质上就是把另一个 premake5.lua 文件中的全部内容复制到当前位置
+include "Cherno_Hazel/vendor/GLFW"
+
 project "Sandbox"
     characterset ("Unicode")
 
@@ -47,7 +55,13 @@ project "Cherno_Hazel"
 
     includedirs {
         "%{prj.name}/vendor/spdlog/include",
-        "%{prj.name}/src"
+        "%{prj.name}/src",
+        "%{IncludeDir.GLFW}",
+    }
+
+    links {
+        "GLFW",
+        "opengl32.lib",
     }
 
     pchheader ("hzpch.h")
@@ -70,6 +84,7 @@ project "Cherno_Hazel"
 
     filter "configurations:Debug"
         defines "HZ_DEBUG"
+        defines "HZ_ENABLE_ASSERTS"
         symbols "On"
         -- runtime "Debug"
 
