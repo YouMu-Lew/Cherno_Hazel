@@ -1,0 +1,166 @@
+@startuml Hazel
+
+namespace Hazel {
+
+enum EventType {
+    None = 0,
+    WindowClose,
+    WindowResize,
+    WindowFocus,
+    WindowLostFocus,
+    WindowMoved,
+    AppTick,
+    AppUpdate,
+    AppRender,
+    KeyPressed,
+    KeyReleased,
+    MouseButtonPressed,
+    MouseButtonReleased,
+    MouseMoved,
+    MouseScrolled,
+}
+
+enum EventCategory {
+    None = 0,
+    EventCategoryApplication = BIT(0),
+    EventCategoryInput = BIT(1),
+    EventCategoryKeyboard = BIT(2),
+    EventCategoryMouse = BIT(3),
+    EventCategoryMouseButton = BIT(4)
+}
+
+abstract class Event {
+    + {abstract} EventType GetEventType() const = 0
+    + {abstract} const char* GetName() const = 0
+    + {abstract} int GetCategoryFlags() const = 0
+    + {abstract} std::string ToString() const
+    + inline bool IsInCategory(EventCategory category)
+    __
+    # bool m_Handle
+}
+
+class KeyEvent {
+    + inline int GetKeyCode() const
+    + EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
+    __
+    # int m_KeyCode
+    ..
+    # KeyEvent(int keycode)
+}
+
+class KeyPressedEvent {
+    + KeyPressedEvent(int keycode, int repeatCount)
+    + inline int GetRepeatCount() const
+    + std::string ToString() const override
+    + EVENT_CLASS_TYPE(KeyPressed)
+    __
+    - int m_RepeatCount
+}
+
+class KeyReleasedEvent {
+    + KeyReleasedEvent(int keycode)
+    + std::string ToString() const override
+    + EVENT_CLASS_TYPE(KeyReleased)
+}
+
+class WindowResizeEvent {
+    + WindowResizeEvent(unsigned int width, unsigned int height)
+    + inline unsigned int GetWidth()
+    + inline unsigned int GetHeight()
+    + std::string ToString() const override
+    + EVENT_CLASS_TYPE(WindowResize)
+    + EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    __
+    - unsigned int m_Width
+    - unsigned int m_Height
+}
+
+class MouseMovedEvent {
+    + MouseMovedEvent(float x, float y)
+    + inline float GetX() const
+    + inline float GetY() const
+    + std::string ToString() const override
+    + EVENT_CLASS_TYPE(MouseMoved)
+    + EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+    __
+    - float m_MouseX
+    - float m_MouseY
+}
+
+class MouseScrolledEvent {
+    + MouseScrolledEvent(float xOffset, float yOffset)
+    + inline float GetXOffset() const
+    + inline float GetYOffset() const
+    + std::string ToString() const override
+    + EVENT_CLASS_TYPE(MouseScrolled)
+    + EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+    __
+    - float m_XOffset
+    - float m_YOffset
+}
+
+class EventDispatcher {
+    + EventDispatcher(Event& event)
+    + bool Dispatch<T>(EventFn<T> func)
+    __
+    - Event& m_Event
+    ==
+    template<typename T>
+    using EventFn = std::function<bool(T&)>;
+}
+
+
+Event -.> EventDispatcher : **friend**
+
+Event <|-- KeyEvent : public
+Event <|-- WindowResizeEvent : public
+Event <|-- MouseMovedEvent : public
+Event <|-- MouseScrolledEvent : public
+KeyEvent <|-- KeyPressedEvent : public
+KeyEvent <|-- KeyReleasedEvent : public
+
+struct WindowProps {
+    + std::string Title
+    + unsigned int Width
+    + unsigned int Height
+    ..
+    + WindowProps(const std::string& title = "Hazel Engine", 
+    unsigned int width = 1280, unsigned int height = 720)
+}
+
+abstract class Window {
+    + {abstract} ~Window()
+    + {abstract} void OnUpdate() = 0
+    + {abstract} unsigned int GetWidth() const = 0
+    + {abstract} unsigned int GetHeight() const = 0
+    + {abstract} void SetEventCallback(const EventCallbackFn& callback) = 0;
+    + {abstract} void SetVSync(bool enabled) = 0
+    + {abstract} bool IsVSync() const = 0
+    + {static} Window* Create(const WindowProps& prop = WindowProps())
+    ==
+    using EventCallbackFn = std::function<void(Event&)>
+}
+
+class WindowsWindow{
+    + WindowsWindow(const WindowProps& props)
+    + {abstract} ~WindowsWindow()
+    + void OnUpdate() override
+    + inline unsigned int GetWidth() const override
+    + inline unsigned int GetHeight() const override
+    + inline void SetEventCallback(const EventCallbackFn& callback) override
+    + void SetVSync(bool enabled) override
+    + bool IsVSync() const override
+    __
+    - GLFWwindow* m_Window;
+    - struct WindowData
+    - WindowData m_Data
+    ..
+    - void Init(const WindowProps& props)
+    - void Shutdown()
+}
+
+Window --|> WindowsWindow : public
+
+}
+
+@enduml
