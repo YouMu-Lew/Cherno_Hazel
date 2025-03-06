@@ -11,6 +11,8 @@ namespace Hazel {
 		Application();
 		virtual ~Application();
 
+		void OnEvent(Event&);
+
 		void Run();
 
 	private:

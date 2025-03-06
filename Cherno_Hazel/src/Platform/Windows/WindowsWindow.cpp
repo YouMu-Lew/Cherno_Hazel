@@ -1,6 +1,10 @@
 #include "hzpch.h"
 #include "WindowsWindow.h"
 
+#include "Hazel\Events\KeyEvent.h"
+#include "Hazel\Events\MouseEvent.h"
+#include "Hazel\Events\ApplicationEvent.h"
+
 namespace Hazel {
 
 	static bool s_GLFWInitialized = false;
@@ -36,6 +40,40 @@ namespace Hazel {
 		glfwMakeContextCurrent(m_Window);
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
+
+		// Set GLFW callbacks
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
+			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+			data.Width = width;
+			data.Height = height;
+
+			WindowResizeEvent event(width, height);
+			data.EventCallback(event);
+			});
+
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
+			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+			WindowCloseEvent event;
+			data.EventCallback(event);
+			});
+		
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
+			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+			switch (action) {
+				case GLFW_PRESS: {
+					MouseButtonPressedEvent event(button);
+					data.EventCallback(event);
+					break;
+				}
+				case GLFW_RELEASE: {
+					MouseButtonReleasedEvent event(button);
+					data.EventCallback(event);
+					break;
+				}
+			}
+			});
 	}
 
 	void WindowsWindow::Shutdown() {
