@@ -14,7 +14,7 @@ namespace Hazel {
 	Application::~Application() {}
 
 	void Application::OnEvent(Event& e){
-		HZ_CORE_INFO("{0}", e.GetName());
+		HZ_CORE_INFO("{0}", e.ToString());
 	}
 
 	void Application::Run() {
