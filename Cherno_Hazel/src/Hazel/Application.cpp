@@ -14,6 +14,9 @@ namespace Hazel {
 	Application::~Application() {}
 
 	void Application::OnEvent(Event& e){
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent));
+
 		HZ_CORE_INFO("{0}", e.ToString());
 	}
 
@@ -24,6 +27,11 @@ namespace Hazel {
 			glClear(GL_COLOR_BUFFER_BIT);
 			m_Window->OnUpdate();
 		}
+	}
+
+	bool Application::OnWindowCloseEvent(WindowCloseEvent& event) {
+		m_Running = false;
+		return true;
 	}
 
 }
