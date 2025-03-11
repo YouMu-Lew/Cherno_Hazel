@@ -1,4 +1,5 @@
 #pragma once
+#include "hzpch.h"
 #include "Event.h"
 
 namespace Hazel {
@@ -21,5 +22,11 @@ namespace Hazel {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	private:
 		unsigned int m_Width, m_Height;
+	};
+
+	class HAZEL_API WindowCloseEvent : public Event {
+	public:
+		EVENT_CLASS_TYPE(WindowClose)
+		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 }
