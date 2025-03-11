@@ -77,6 +77,32 @@ package Event {
         - unsigned int m_Height
     }
 
+    class WindowCloseEvent {
+        + EVENT_CLASS_TYPE(WindowClose)
+        + EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    }
+
+    class MouseButtonEvent {
+        + int GetMouseButton() const
+        + EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
+        __
+        # int m_Button
+        ..
+        # MouseButtonEvent(const int button)
+    }
+
+    class MouseButtonPressedEvent {
+        + MouseButtonPressedEvent(const int button)
+        + std::string ToString() const override
+        + EVENT_CLASS_TYPE(MouseButtonPressed)
+    }
+
+    class MouseButtonReleasedEvent {
+        + MouseButtonReleasedEvent(const int button)
+        + std::string ToString() const override
+        + EVENT_CLASS_TYPE(MouseButtonReleased)
+    }
+
     class MouseMovedEvent {
         + MouseMovedEvent(float x, float y)
         + inline float GetX() const
@@ -116,8 +142,12 @@ package Event {
 
     Event <|.. KeyEvent : public
     Event <|.. WindowResizeEvent : public
+    Event <|.. WindowCloseEvent : public
     Event <|.. MouseMovedEvent : public
     Event <|.. MouseScrolledEvent : public
+    Event <|.. MouseButtonEvent : public
+    MouseButtonEvent <|-- MouseButtonPressedEvent : public
+    MouseButtonEvent <|-- MouseButtonReleasedEvent : public
     KeyEvent <|-- KeyPressedEvent : public
     KeyEvent <|-- KeyReleasedEvent : public
 
@@ -173,6 +203,7 @@ class Application {
     + Application()
     + {abstract} ~Application()
     + void Run()
+    + bool OnWindowCloseEvent(WindowCloseEvent& event)
     __
     - std::unique_ptr<Window> m_Window;
     - bool m_Running;
