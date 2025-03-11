@@ -32,7 +32,7 @@ namespace Hazel {
 
 	class HAZEL_API MouseButtonReleasedEvent : public MouseButtonEvent {
 	public:
-		MouseButtonReleasedEvent(const int button) :m_ButtonCode(button) {}
+		MouseButtonReleasedEvent(const int button) : MouseButtonEvent(button) {}
 
 		inline int GetButtonCode() const { return m_ButtonCode; }
 
