@@ -42,6 +42,10 @@ project "Sandbox"
         "HZ_PLATFORM_WINDOWS"
     }
 
+    prebuildcommands {
+        ("{COPY} ../bin/" .. outputdir .. "/Cherno_Hazel/Cherno_Hazel.dll ../bin/" .. outputdir .. "/Sandbox/")
+    }
+
 project "Cherno_Hazel"
     characterset ("Unicode")
 
@@ -72,9 +76,9 @@ project "Cherno_Hazel"
         "%{prj.name}/src/**.cpp"
     }
 
-    postbuildcommands { 
-        ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox/")
-    }
+    -- postbuildcommands { 
+    --     ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox/")
+    -- }
 
     filter "system:windows"
         defines{
