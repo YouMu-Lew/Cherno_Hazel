@@ -32,13 +32,12 @@ package Event {
     }
 
     abstract class Event {
+        + bool Handle
         + {abstract} EventType GetEventType() const = 0
         + {abstract} const char* GetName() const = 0
         + {abstract} int GetCategoryFlags() const = 0
         + {abstract} std::string ToString() const
         + inline bool IsInCategory(EventCategory category)
-        __
-        # bool m_Handle
     }
 
     class KeyEvent {
@@ -199,23 +198,67 @@ package Window{
 
 }/'package Window'/
 
+package Layer{
+    abstract class Layer {
+        + Layer(const std::string& name = "Layer")
+        + {abstract} ~Layer()
+        + {abstract} void OnAttach() = 0
+        + {abstract} void OnDetach() = 0
+        + {abstract} void OnUpdate() = 0
+        + {abstract} void OnEvent(Event& event) = 0
+        + inline const std::string& GetName() const
+        __
+        # std::string m_DebugName
+    }
+
+    class LayerStack {
+        + LayerStack()
+        + ~LayerStack()
+        + void PushLayer(Layer* layer)
+        + void PushOverlay(Layer* layer)
+        + void PopLayer(Layer* layer)
+        + void PopOverlay(Layer* layer)
+        + std::vector<Layer*>::iterator begin()
+        + std::vector<Layer*>::iterator end()
+        __
+        - std::vector<Layer*> m_Layers
+        - std::vector<Layer*>::iterator m_LayerInsert
+    }
+}/'package Layer'/
+
 class Application {
     + Application()
     + {abstract} ~Application()
+    + void OnEvent(Event&)
     + void Run()
-    + bool OnWindowCloseEvent(WindowCloseEvent& event)
+    + void PushLayer(Layer* layer)
+    + void PushOverlay(Layer* layer)
     __
-    - std::unique_ptr<Window> m_Window;
-    - bool m_Running;
+    - bool OnWindowCloseEvent(WindowCloseEvent& event)
+    - std::unique_ptr<Window> m_Window
+    - bool m_Running
+    - LayerStack m_LayerStack;
 }
 
-}
+}/'namespace Hazel'/
+
+package Sandbox{
 
 class Sandbox{
     + Sandbox()
     + ~Sandbox()
 }
 
-Application <|-- Sandbox : public
+class ExampleLayer{
+    + ExampleLayer() : Layer("Example")
+    + void OnUpdate() override
+    + void OnEvent(Event& event) override
+}
+
+}/'package Sandbox'/
+
+Hazel.Application <|-- Sandbox.Sandbox : public
+Hazel.Layer.Layer <|-- Sandbox.ExampleLayer : public
+
 
 @enduml

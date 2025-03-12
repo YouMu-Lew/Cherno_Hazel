@@ -38,6 +38,8 @@ namespace Hazel {
     class HAZEL_API Event {
         friend class EventDispatcher;
     public:
+        bool Handle = false;
+
         virtual EventType GetEventType() const = 0;
         virtual const char* GetName() const = 0;
         virtual int GetCategoryFlags() const = 0;
@@ -48,7 +50,6 @@ namespace Hazel {
             return GetCategoryFlags() & category;
         }
     protected:
-        bool m_Handle = false;
     };
 
     class EventDispatcher {
@@ -60,7 +61,7 @@ namespace Hazel {
         template<typename T>
         bool Dispatch(EventFn<T> func) {
             if (m_Event.GetEventType() == T::GetStaticType()) {
-                m_Event.m_Handle = func(*(T*)&m_Event);// 将变量 m_Event 强制转换为 T 类型，再传入 func()
+                m_Event.Handle = func(*(T*)&m_Event);// 将变量 m_Event 强制转换为 T 类型，再传入 func()
                 return true;
             }
             return false;

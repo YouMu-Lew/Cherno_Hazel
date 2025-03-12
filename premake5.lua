@@ -37,14 +37,34 @@ project "Sandbox"
         "Cherno_Hazel/vendor/spdlog/include",
         "Cherno_Hazel/src"
     }
-
-    defines{
-        "HZ_PLATFORM_WINDOWS"
-    }
-
+    
     prebuildcommands {
         ("{COPY} ../bin/" .. outputdir .. "/Cherno_Hazel/Cherno_Hazel.dll ../bin/" .. outputdir .. "/Sandbox/")
     }
+    
+    filter "system:windows"
+        defines{
+            "HZ_PLATFORM_WINDOWS"
+        }
+
+    filter "configurations:Debug"
+        defines "HZ_DEBUG"
+        buildoptions { "/MDd" }
+        symbols "On"
+        -- runtime "Debug"
+
+    filter "configurations:Release"
+        defines "HZ_RELEASE"
+        buildoptions { "/MD" }
+        optimize "On"
+        -- runtime "Release"
+
+    filter "configurations:Dist"
+        defines "HZ_DIST"
+        buildoptions { "/MD" }
+        optimize "On"
+        -- runtime "Release"
+
 
 project "Cherno_Hazel"
     characterset ("Unicode")
@@ -89,15 +109,18 @@ project "Cherno_Hazel"
     filter "configurations:Debug"
         defines "HZ_DEBUG"
         defines "HZ_ENABLE_ASSERTS"
+        buildoptions { "/MDd" }
         symbols "On"
         -- runtime "Debug"
 
     filter "configurations:Release"
         defines "HZ_RELEASE"
+        buildoptions { "/MD" }
         optimize "On"
         -- runtime "Release"
 
     filter "configurations:Dist"
         defines "HZ_DIST"
+        buildoptions { "/MD" }
         optimize "On"
         -- runtime "Release"
