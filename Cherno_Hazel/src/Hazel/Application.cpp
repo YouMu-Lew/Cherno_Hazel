@@ -1,6 +1,10 @@
 #include "hzpch.h"
 #include "Application.h"
-#include <GLFW\glfw3.h>
+
+// 如果定义了 GLFW_INCLUDE_NONE
+// 此处需要修改为 include <glad\glad.h>
+// #include <GLFW\glfw3.h>
+#include <glad\glad.h>
 
 namespace Hazel {
 

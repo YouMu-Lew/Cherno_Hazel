@@ -8,10 +8,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories velative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Cherno_Hazel/vendor/GLFW/include"
+IncludeDir["Glad"] = "Cherno_Hazel/vendor/Glad/include"
 
 -- 类似 cpp include 
 -- 本质上就是把另一个 premake5.lua 文件中的全部内容复制到当前位置
 include "Cherno_Hazel/vendor/GLFW"
+include "Cherno_Hazel/vendor/Glad"
 
 project "Sandbox"
     characterset ("Unicode")
@@ -81,10 +83,12 @@ project "Cherno_Hazel"
         "%{prj.name}/vendor/spdlog/include",
         "%{prj.name}/src",
         "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}",
     }
 
     links {
         "GLFW",
+        "Glad",
         "opengl32.lib",
     }
 
@@ -103,7 +107,8 @@ project "Cherno_Hazel"
     filter "system:windows"
         defines{
             "HZ_PLATFORM_WINDOWS",
-            "HZ_BUILD_DLL"
+            "HZ_BUILD_DLL",
+            "GLFW_INCLUDE_NONE",
         }
 
     filter "configurations:Debug"
