@@ -9,11 +9,13 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Cherno_Hazel/vendor/GLFW/include"
 IncludeDir["Glad"] = "Cherno_Hazel/vendor/Glad/include"
+IncludeDir["imgui"] = "Cherno_Hazel/vendor/imgui"
 
 -- 类似 cpp include 
 -- 本质上就是把另一个 premake5.lua 文件中的全部内容复制到当前位置
 include "Cherno_Hazel/vendor/GLFW"
 include "Cherno_Hazel/vendor/Glad"
+include "Cherno_Hazel/vendor/imgui"
 
 project "Sandbox"
     characterset ("Unicode")
@@ -84,11 +86,13 @@ project "Cherno_Hazel"
         "%{prj.name}/src",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
+        "%{IncludeDir.imgui}",
     }
 
     links {
         "GLFW",
         "Glad",
+        "imgui",
         "opengl32.lib",
     }
 
