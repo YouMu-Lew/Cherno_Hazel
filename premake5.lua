@@ -25,6 +25,10 @@ project "Sandbox"
     language "C++"
     cppdialect "C++20"
 
+    -- Off -> Sets <RuntimeLibrary> to "MultiThreadedDLL"
+    -- On -> Sets <RuntimeLibrary> to "MultiThreaded"
+    staticruntime "Off"
+
     links{
         "Cherno_Hazel"
     }
@@ -53,21 +57,18 @@ project "Sandbox"
 
     filter "configurations:Debug"
         defines "HZ_DEBUG"
-        buildoptions { "/MDd" }
+        runtime "Debug"
         symbols "On"
-        -- runtime "Debug"
 
     filter "configurations:Release"
         defines "HZ_RELEASE"
-        buildoptions { "/MD" }
+        runtime "Release"
         optimize "On"
-        -- runtime "Release"
 
     filter "configurations:Dist"
         defines "HZ_DIST"
-        buildoptions { "/MD" }
+        runtime "Release"
         optimize "On"
-        -- runtime "Release"
 
 
 project "Cherno_Hazel"
@@ -77,6 +78,8 @@ project "Cherno_Hazel"
     kind "SharedLib"
     language "C++"
     cppdialect "C++20"
+
+    staticruntime "Off"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -104,9 +107,16 @@ project "Cherno_Hazel"
         "%{prj.name}/src/**.cpp"
     }
 
-    -- postbuildcommands { 
-    --     ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox/")
-    -- }
+    -- 如果只是在 Sandbox 构建之前复制
+    -- 那么当仅有 Hazel 项目变更时，最新的 dll 文件并不会被复制到 Sandbox
+    -- 因为 Sandbox 没有更改，所以不会被重新构建
+    -- 因此为了确保 Sandbox 构建时，总是复制最新的 dll 文件
+    -- 直接在 Hazel 构建结束后，复制 dll 文件
+    -- 虽然可能会导致，在最初的构建时，Sandbox 文件夹还不存在的问题
+    -- 但只需再构建一次即可
+    postbuildcommands { 
+        ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox/")
+    }
 
     filter "system:windows"
         defines{
@@ -117,19 +127,16 @@ project "Cherno_Hazel"
 
     filter "configurations:Debug"
         defines "HZ_DEBUG"
-        defines "HZ_ENABLE_ASSERTS"
-        buildoptions { "/MDd" }
+        -- defines "HZ_ENABLE_ASSERTS"
         symbols "On"
-        -- runtime "Debug"
+        runtime "Debug"
 
     filter "configurations:Release"
         defines "HZ_RELEASE"
-        buildoptions { "/MD" }
         optimize "On"
-        -- runtime "Release"
+        runtime "Release"
 
     filter "configurations:Dist"
         defines "HZ_DIST"
-        buildoptions { "/MD" }
         optimize "On"
-        -- runtime "Release"
+        runtime "Release"
