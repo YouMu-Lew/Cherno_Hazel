@@ -13,9 +13,11 @@ IncludeDir["imgui"] = "Cherno_Hazel/vendor/imgui"
 
 -- 类似 cpp include 
 -- 本质上就是把另一个 premake5.lua 文件中的全部内容复制到当前位置
-include "Cherno_Hazel/vendor/GLFW"
-include "Cherno_Hazel/vendor/Glad"
-include "Cherno_Hazel/vendor/imgui"
+group "Dependencies"
+    include "Cherno_Hazel/vendor/GLFW"
+    include "Cherno_Hazel/vendor/Glad"
+    include "Cherno_Hazel/vendor/imgui"
+group ""
 
 project "Sandbox"
     characterset ("Unicode")
@@ -46,9 +48,9 @@ project "Sandbox"
         "Cherno_Hazel/src"
     }
     
-    prebuildcommands {
-        ("{COPY} ../bin/" .. outputdir .. "/Cherno_Hazel/Cherno_Hazel.dll ../bin/" .. outputdir .. "/Sandbox/")
-    }
+    -- prebuildcommands {
+    --     ("{COPY} ../bin/" .. outputdir .. "/Cherno_Hazel/Cherno_Hazel.dll ../bin/" .. outputdir .. "/Sandbox/")
+    -- }
     
     filter "system:windows"
         defines{
@@ -107,15 +109,10 @@ project "Cherno_Hazel"
         "%{prj.name}/src/**.cpp"
     }
 
-    -- 如果只是在 Sandbox 构建之前复制
-    -- 那么当仅有 Hazel 项目变更时，最新的 dll 文件并不会被复制到 Sandbox
-    -- 因为 Sandbox 没有更改，所以不会被重新构建
-    -- 因此为了确保 Sandbox 构建时，总是复制最新的 dll 文件
-    -- 直接在 Hazel 构建结束后，复制 dll 文件
-    -- 虽然可能会导致，在最初的构建时，Sandbox 文件夹还不存在的问题
-    -- 但只需再构建一次即可
+    -- https://github.com/TheCherno/Hazel/pull/22
+    -- A better solution for the question of building fails for the first time
     postbuildcommands { 
-        ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox/")
+        ("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
     }
 
     filter "system:windows"
