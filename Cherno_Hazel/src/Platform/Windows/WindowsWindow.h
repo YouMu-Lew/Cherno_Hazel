@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Hazel\Window.h"
+// 如果未定义 GLFW_INCLUDE_NONE
+// 确保先 include glad.h 之后再 include glfw3.h
+// 否则会报错 C1189 #error: OpenGL header already included, remove this include, glad already provides it
+#include <glad\glad.h>
 #include <GLFW\glfw3.h>
 
 namespace Hazel {
@@ -18,6 +22,7 @@ namespace Hazel {
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
+		virtual void* GetNativeWindow() const override { return m_Window; }
 
 	private:
 		GLFWwindow* m_Window;
