@@ -10,6 +10,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Cherno_Hazel/vendor/GLFW/include"
 IncludeDir["Glad"] = "Cherno_Hazel/vendor/Glad/include"
 IncludeDir["imgui"] = "Cherno_Hazel/vendor/imgui"
+IncludeDir["glm"] = "Cherno_Hazel/vendor/glm"
 
 -- 类似 cpp include 
 -- 本质上就是把另一个 premake5.lua 文件中的全部内容复制到当前位置
@@ -45,7 +46,8 @@ project "Sandbox"
 
     includedirs {
         "Cherno_Hazel/vendor/spdlog/include",
-        "Cherno_Hazel/src"
+        "Cherno_Hazel/src",
+        "%{IncludeDir.glm}",
     }
     
     -- prebuildcommands {
@@ -92,6 +94,7 @@ project "Cherno_Hazel"
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
         "%{IncludeDir.imgui}",
+        "%{IncludeDir.glm}",
     }
 
     links {
@@ -106,7 +109,9 @@ project "Cherno_Hazel"
 
     files{
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/vendor/glm/**.hpp",
+        "%{prj.name}/vendor/glm/**.inl",
     }
 
     -- https://github.com/TheCherno/Hazel/pull/22

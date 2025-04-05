@@ -7,3 +7,6 @@
 [submodule "Cherno_Hazel/vendor/imgui"]
 	path = Cherno_Hazel/vendor/imgui
 	url = https://github.com/YouMu-Lew/imgui.git
+[submodule "Cherno_Hazel/vendor/glm"]
+	path = Cherno_Hazel/vendor/glm
+	url = https://github.com/icaven/glm
