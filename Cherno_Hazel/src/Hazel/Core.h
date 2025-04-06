@@ -18,6 +18,7 @@
 
 #ifdef HZ_DEBUG
 	#define HZ_ENABLE_ASSERTS
+	#define IMGUI_IMPL_OPENGL_DEBUG
 #endif // HZ_DEBUG
 
 #ifdef HZ_ENABLE_ASSERTS
