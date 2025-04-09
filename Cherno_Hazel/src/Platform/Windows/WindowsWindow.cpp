@@ -42,11 +42,9 @@ namespace Hazel {
 		}
 
 		m_Window = glfwCreateWindow(static_cast<int>(m_Data.Width), static_cast<int>(m_Data.Height), m_Data.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
 
-		/** glfwGetProcAddress 是 GLFW 提供的函数，用于获取 OpenGL 函数的地址。通过将(GLADloadproc)glfwGetProcAddress 传递给 gladLoadGLLoader，GLAD 可以加载所有必要的 OpenGL 函数 */
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		HZ_CORE_ASSERT(status, "Failed to initialize glad!");
+		m_context = new OpenGLContext(m_Window);
+		m_context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
@@ -135,7 +133,7 @@ namespace Hazel {
 
 	void WindowsWindow::OnUpdate() {
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled) {
