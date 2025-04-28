@@ -10,7 +10,8 @@ namespace Hazel {
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application() {
+	Application::Application()
+	{
 		HZ_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
@@ -25,21 +26,19 @@ namespace Hazel {
 		// 绑定VAO，使其成为当前活动的顶点数组对象
 		glBindVertexArray(m_VertexArray);
 
-		// 生成一个顶点缓冲对象（VBO），用于存储顶点数据
-		glGenBuffers(1, &m_VertexBuffer);
-		// 将VBO绑定到GL_ARRAY_BUFFER目标上，表示这是一个顶点数据缓冲
-		glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-
 		// 定义一个包含3个顶点的数组，每个顶点有3个浮点数（x, y, z坐标）
-		float vertices[4 * 3] = {
+		float vertices[3 * 3] = {
 			-1.0f, -1.0f, 0.0f, // 第一个顶点
 			-1.0f, 1.0f, 0.0f,  // 第二个顶点
 			1.0f, 1.0f, 0.0f,    // 第三个顶点
-			1.0f, 0.0f, 0.0f,	// 4
 		};
 
-		// 将顶点数据上传到GPU内存中，GL_STATIC_DRAW 表示数据在绘制过程中不会频繁更改
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+
+		// 定义一个包含3个索引的数组，用于指定顶点的绘制顺序
+		uint32_t indices[3] = { 0, 1, 2 };
+
+		m_IndexBuffer.reset(IndexBuffer::Create(indices, 3));
 
 		// 启用顶点属性索引0，表示该属性将被传递给着色器
 		glEnableVertexAttribArray(0);
@@ -51,17 +50,6 @@ namespace Hazel {
 		// - 顶点之间的步长为3 * sizeof(float)
 		// - 数据偏移量为nullptr（从缓冲区的起始位置开始）
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-
-		// 生成一个索引缓冲对象（EBO），用于存储索引数据
-		glGenBuffers(1, &m_IndexBuffer);
-		// 将EBO绑定到GL_ELEMENT_ARRAY_BUFFER目标上，表示这是一个索引缓冲
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
-
-		// 定义一个包含3个索引的数组，用于指定顶点的绘制顺序
-		unsigned int indices[3] = { 0, 1, 2 };
-
-		// 将索引数据上传到GPU内存中，GL_STATIC_DRAW表示数据在绘制过程中不会频繁更改
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 		std::string vertexSrc = R"(
 			#version 460 core
@@ -93,17 +81,20 @@ namespace Hazel {
 
 	Application::~Application() {}
 
-	void Application::PushLayer(Layer* layer) {
+	void Application::PushLayer(Layer* layer)
+	{
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
-	void Application::PushOverlay(Layer* overlay) {
+	void Application::PushOverlay(Layer* overlay)
+	{
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();
 	}
 
-	void Application::OnEvent(Event& e){
+	void Application::OnEvent(Event& e)
+	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent));
 
@@ -116,13 +107,15 @@ namespace Hazel {
 		}
 	}
 
-	void Application::Run() {
-		while (m_Running) 
-		{
+	void Application::Run()
+	{
+		while (m_Running) {
 			//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			//glClear(GL_COLOR_BUFFER_BIT);
 
 			m_Shader->Bind();
+			m_VertexBuffer->Bind();
+			m_IndexBuffer->Bind();
 			glBindVertexArray(m_VertexArray);
 			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
@@ -138,7 +131,8 @@ namespace Hazel {
 		}
 	}
 
-	bool Application::OnWindowCloseEvent(WindowCloseEvent& event) {
+	bool Application::OnWindowCloseEvent(WindowCloseEvent& event)
+	{
 		m_Running = false;
 		return true;
 	}
