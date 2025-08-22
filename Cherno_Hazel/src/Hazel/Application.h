@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+import Buffer;
+
 #include "core.h"
 #include "Window.h"
 
@@ -11,7 +13,7 @@
 
 #include "Hazel\Renderer\Shader.h"
 
-#include "Hazel\Renderer\Buffer.h"
+//#include "Hazel\Renderer\Buffer.h"
 
 namespace Hazel {
 

@@ -1,6 +1,8 @@
-﻿#pragma once
+﻿#include "hzpch.h"
 
-namespace Hazel {
+export module Buffer;
+
+export namespace Hazel {
 
     class VertexBuffer {
     public:

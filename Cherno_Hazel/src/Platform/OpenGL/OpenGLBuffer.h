@@ -1,6 +1,8 @@
 ﻿#pragma once
 
-#include "Hazel\Renderer\Buffer.h"
+import Buffer;
+//#include "Hazel\Renderer\Buffer.h"
+
 namespace Hazel {
 
     class OpenGLVertexBuffer : public VertexBuffer {
