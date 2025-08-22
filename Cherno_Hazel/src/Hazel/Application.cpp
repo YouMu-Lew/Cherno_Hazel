@@ -1,4 +1,4 @@
-#include "hzpch.h"
+﻿#include "hzpch.h"
 #include "Application.h"
 
 // 如果定义了 GLFW_INCLUDE_NONE
@@ -27,15 +27,15 @@ namespace Hazel {
 		glBindVertexArray(m_VertexArray);
 
 		// 定义一个包含3个顶点的数组，每个顶点有3个浮点数（x, y, z坐标）
-		float vertices[3 * 3] = {
-			-1.0f, -1.0f, 0.0f, // 第一个顶点
-			-1.0f, 1.0f, 0.0f,  // 第二个顶点
-			1.0f, 1.0f, 0.0f,    // 第三个顶点
-		};
+        float vertices[3 * 3] = {
+            -1.0f, -1.0f, 0.0f, // 第一个顶点
+            -1.0f, 1.0f,  0.0f, // 第二个顶点
+            1.0f,  1.0f,  0.0f, // 第三个顶点
+        };
 
-		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+        m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 
-		// 定义一个包含3个索引的数组，用于指定顶点的绘制顺序
+        // 定义一个包含3个索引的数组，用于指定顶点的绘制顺序
 		uint32_t indices[3] = { 0, 1, 2 };
 
 		m_IndexBuffer.reset(IndexBuffer::Create(indices, 3));
@@ -97,10 +97,11 @@ namespace Hazel {
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent));
+        dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResizeEvent));
 
-		//HZ_CORE_INFO("{0}", e.ToString());
+        // HZ_CORE_INFO("{0}", e.ToString());
 
-		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
+        for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
 			(*--it)->OnEvent(e);
 			if (e.Handle)
 				break;
@@ -137,4 +138,10 @@ namespace Hazel {
 		return true;
 	}
 
+    bool Application::OnWindowResizeEvent(WindowResizeEvent& event)
+    {
+        // m_Running = false;
+        HZ_CORE_INFO("width: {0}, height: {1}",event.GetWidth(), event.GetHeight());
+        return true;
+    }
 }

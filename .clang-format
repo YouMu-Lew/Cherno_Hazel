@@ -1,0 +1,40 @@
+# YM's Format Style Options
+---
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
+AlignConsecutiveMacros: true
+AlignOperands: Align
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Inline
+BasedOnStyle: LLVM
+ColumnLimit: 120
+Language: Cpp
+PointerAlignment: Left
+SortIncludes: false
+SpaceBeforeParens: ControlStatements
+TabWidth: 4
+UseTab: Never
+
+# 缩进
+IndentWidth: 4
+IndentCaseLabels: true
+NamespaceIndentation: All
+IndentPPDirectives: BeforeHash
+
+# 自定义换行规则
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterClass: false
+  # BraceWrappingAfterControlStatementStyle
+  AfterEnum: false
+  AfterFunction: true
+  AfterNamespace: false
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: false
+  BeforeLambdaBody: false
+  BeforeWhile: false
+...
