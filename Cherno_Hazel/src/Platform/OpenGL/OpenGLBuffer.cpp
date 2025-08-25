@@ -40,8 +40,7 @@ namespace Hazel {
     // IndexBuffer //
     // ----------- //
 
-    OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
-        : m_Count(count)
+    OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count) : m_Count(count)
     {
         // 生成一个索引缓冲对象（EBO），用于存储索引数据
         glCreateBuffers(1, &m_RendererID);
@@ -66,4 +65,4 @@ namespace Hazel {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-}
+} // namespace Hazel

@@ -4,12 +4,81 @@ export module Buffer;
 
 export namespace Hazel {
 
+    enum class ShaderDataType { None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool };
+
+}
+
+namespace Hazel {
+    static uint32_t ShaderDataTypeSize(const ShaderDataType& type)
+    {
+        switch (type) {
+            case Hazel::ShaderDataType::Float:
+                return 4;
+            case ShaderDataType::Float2:
+                return 4 * 2;
+            case ShaderDataType::Float3:
+                return 4 * 3;
+            case ShaderDataType::Float4:
+                return 4 * 4;
+            case ShaderDataType::Mat3:
+                return 4 * 3 * 3;
+            case ShaderDataType::Mat4:
+                return 4 * 4 * 4;
+            case ShaderDataType::Int:
+                return 4;
+            case ShaderDataType::Int2:
+                return 4 * 2;
+            case ShaderDataType::Int3:
+                return 4 * 3;
+            case ShaderDataType::Int4:
+                return 4 * 4;
+            case ShaderDataType::Bool:
+                return 1;
+        }
+        HZ_CORE_ASSERT(false, "Unknown ShaderDataType.");
+        return 0;
+    }
+} // namespace Hazel
+
+export namespace Hazel {
+
+    // enum class ShaderDataType { None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool };
+
+    struct BufferLayoutElement
+    {
+        ShaderDataType Type;
+        std::string Name;
+        uint32_t Size;
+        uint32_t Offset;
+        uint32_t Count;
+        bool Normalized;
+
+        BufferLayoutElement(ShaderDataType type, const std::string& name, bool normalized = false)
+            : Type(type), Name(name), Normalized(normalized), Size(ShaderDataTypeSize(type)), Offset(0), Count(0)
+        {
+        }
+    };
+
+    class VertexBufferLayout {
+    public:
+        VertexBufferLayout() {}
+
+        // TODO: why `initializer_list` can but `vertor` cannot
+        VertexBufferLayout(const std::initializer_list<BufferLayoutElement>& elements) : m_elements(elements) {}
+
+    private:
+        std::vector<BufferLayoutElement> m_elements;
+    };
+
     class VertexBuffer {
     public:
         virtual ~VertexBuffer() {}
 
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
+
+        virtual void SetLayout(const VertexBufferLayout& layout) = 0;
+        virtual const VertexBufferLayout& GetLayout() const = 0;
 
         static VertexBuffer* Create(float* vertices, uint32_t size);
     };

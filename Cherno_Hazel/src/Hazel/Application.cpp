@@ -40,6 +40,10 @@ namespace Hazel {
 
         m_IndexBuffer.reset(IndexBuffer::Create(indices, 3));
 
+        VertexBufferLayout layout = {{ShaderDataType::Float3, "a_Position"}, {ShaderDataType::Float4, "a_Color"}};
+
+        m_VertexBuffer->SetLayout(layout);
+
         // 启用顶点属性索引0，表示该属性将被传递给着色器
         glEnableVertexAttribArray(0);
         // 配置顶点属性指针，定义如何从VBO中读取顶点数据：
