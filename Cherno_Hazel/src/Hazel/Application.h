@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 import Buffer;
+import Shader;
 
 #include "core.h"
 #include "Window.h"
@@ -11,7 +12,7 @@ import Buffer;
 #include "Events\Event.h"
 #include "Events\ApplicationEvent.h"
 
-#include "Hazel\Renderer\Shader.h"
+//#include "Hazel\Renderer\Shader.h"
 
 //#include "Hazel\Renderer\Buffer.h"
 

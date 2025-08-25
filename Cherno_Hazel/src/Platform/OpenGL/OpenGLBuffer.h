@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 import Buffer;
-//#include "Hazel\Renderer\Buffer.h"
 
 namespace Hazel {
 
