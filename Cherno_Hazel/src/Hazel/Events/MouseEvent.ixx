@@ -1,8 +1,10 @@
 ﻿#include "hzpch.h"
 
-#include "Event.h"
+#include "EventMacros.h"
 
 export module MouseEvent;
+
+import Event;
 
 export namespace Hazel {
 

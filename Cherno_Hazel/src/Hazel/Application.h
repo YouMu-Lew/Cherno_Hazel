@@ -6,8 +6,7 @@
 #include "Hazel\LayerStack.h"
 #include "Hazel\ImGui\ImGuiLayer.h"
 
-#include "Events\Event.h"
-
+import Event;
 import Buffer;
 import Shader;
 import ApplicationEvent;
