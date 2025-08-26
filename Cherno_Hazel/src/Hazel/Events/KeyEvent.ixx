@@ -1,8 +1,10 @@
-﻿#pragma once
+﻿#include "hzpch.h"
 
 #include "Event.h"
 
-namespace Hazel {
+export module KeyEvent;
+
+export namespace Hazel {
 
     class KeyEvent : public Event {
     public:

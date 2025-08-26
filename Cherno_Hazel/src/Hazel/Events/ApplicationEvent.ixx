@@ -1,15 +1,17 @@
-﻿#pragma once
-#include "hzpch.h"
+﻿#include "hzpch.h"
+
 #include "Event.h"
 
-namespace Hazel {
+export module ApplicationEvent;
+
+export namespace Hazel {
 
     class WindowResizeEvent : public Event {
     public:
         WindowResizeEvent(unsigned int width, unsigned int height) : m_Width(width), m_Height(height) {}
 
-        inline unsigned int GetWidth() { return m_Width; }
-        inline unsigned int GetHeight() { return m_Height; }
+        inline unsigned int GetWidth() const { return m_Width; }
+        inline unsigned int GetHeight() const { return m_Height; }
 
         std::string ToString() const override
         {

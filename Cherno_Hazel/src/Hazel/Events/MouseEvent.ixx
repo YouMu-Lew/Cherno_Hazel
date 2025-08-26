@@ -1,8 +1,10 @@
-﻿#pragma once
+﻿#include "hzpch.h"
 
 #include "Event.h"
 
-namespace Hazel {
+export module MouseEvent;
+
+export namespace Hazel {
 
     class MouseButtonEvent : public Event {
     public:

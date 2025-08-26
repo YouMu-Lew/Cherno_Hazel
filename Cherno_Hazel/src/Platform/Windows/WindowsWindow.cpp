@@ -1,9 +1,10 @@
 ﻿#include "hzpch.h"
+
 #include "WindowsWindow.h"
 
-#include "Hazel\Events\KeyEvent.h"
-#include "Hazel\Events\MouseEvent.h"
-#include "Hazel\Events\ApplicationEvent.h"
+import ApplicationEvent;
+import KeyEvent;
+import MouseEvent;
 
 namespace Hazel {
 
@@ -31,8 +32,8 @@ namespace Hazel {
 
     void WindowsWindow::Init(const WindowProps& props)
     {
-        m_Data.Title = props.Title;
-        m_Data.Width = props.Width;
+        m_Data.Title  = props.Title;
+        m_Data.Width  = props.Width;
         m_Data.Height = props.Height;
 
         HZ_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
@@ -58,8 +59,8 @@ namespace Hazel {
         // Set GLFW callbacks
         glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-            data.Width = width;
-            data.Height = height;
+            data.Width       = width;
+            data.Height      = height;
 
             WindowResizeEvent event(width, height);
             data.EventCallback(event);

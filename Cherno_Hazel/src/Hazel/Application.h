@@ -1,8 +1,5 @@
 ﻿#pragma once
 
-import Buffer;
-import Shader;
-
 #include "core.h"
 #include "Window.h"
 
@@ -10,11 +7,10 @@ import Shader;
 #include "Hazel\ImGui\ImGuiLayer.h"
 
 #include "Events\Event.h"
-#include "Events\ApplicationEvent.h"
 
-//#include "Hazel\Renderer\Shader.h"
-
-//#include "Hazel\Renderer\Buffer.h"
+import Buffer;
+import Shader;
+import ApplicationEvent;
 
 namespace Hazel {
 
