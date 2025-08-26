@@ -14,18 +14,14 @@ namespace Hazel {
             case ShaderDataType::Float:
             case ShaderDataType::Float2:
             case ShaderDataType::Float3:
-            case ShaderDataType::Float4:
-                return GL_FLOAT;
+            case ShaderDataType::Float4: return GL_FLOAT;
             case ShaderDataType::Mat3:
-            case ShaderDataType::Mat4:
-                return GL_FLOAT;
+            case ShaderDataType::Mat4: return GL_FLOAT;
             case ShaderDataType::Int:
             case ShaderDataType::Int2:
             case ShaderDataType::Int3:
-            case ShaderDataType::Int4:
-                return GL_INT;
-            case ShaderDataType::Bool:
-                return GL_BOOL;
+            case ShaderDataType::Int4: return GL_INT;
+            case ShaderDataType::Bool: return GL_BOOL;
         }
         HZ_CORE_ASSERT(false, "Unknown ShaderDataType.");
         return 0;
@@ -50,10 +46,10 @@ namespace Hazel {
         glBindVertexArray(m_VertexArray);
 
         // 定义一个包含3个顶点的数组，每个顶点有3个浮点数（x, y, z坐标）
-        float vertices[3 * 3] = {
-            -1.0f, -1.0f, 0.0f, // 第一个顶点
-            -1.0f, 1.0f,  0.0f, // 第二个顶点
-            1.0f,  1.0f,  0.0f, // 第三个顶点
+        float vertices[3 * 7] = {
+            -0.5f, -0.5f, 0.0f, 0.5f, 0.8f, 0.4f, 0.0f, // 第一个顶点
+            -0.0f, 0.5f,  0.0f, 0.0f, 0.1f, 0.3f, 0.0f, // 第二个顶点
+            0.5f,  -0.5f, 0.0f, 0.5f, 0.4f, 0.9f, 0.0f, // 第三个顶点
         };
 
         m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
@@ -64,15 +60,16 @@ namespace Hazel {
         m_IndexBuffer.reset(IndexBuffer::Create(indices, 3));
 
         {
-            VertexBufferLayout layout = {
-                {ShaderDataType::Float3, "a_Position"}, 
-                //{ShaderDataType::Float4, "a_Color"}
+            BufferLayout layout = {
+                {ShaderDataType::Float3, "a_Position"},
+                {ShaderDataType::Float4,    "a_Color"},
             };
             m_VertexBuffer->SetLayout(layout);
         }
 
         // 启用顶点属性索引0，表示该属性将被传递给着色器
         // glEnableVertexAttribArray(0);
+
         // 配置顶点属性指针，定义如何从VBO中读取顶点数据：
         // - 索引为0
         // - 每个顶点包含3个分量（x, y, z）
@@ -82,39 +79,54 @@ namespace Hazel {
         // - 数据偏移量为nullptr（从缓冲区的起始位置开始）
         // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
-        auto& bufferLayout = m_VertexBuffer->GetLayout();
-        for (auto i = 0; i < bufferLayout.GetElements().size(); ++i) {
-            auto& element = bufferLayout.GetElements()[i];
-
-            glEnableVertexAttribArray(i);
-            glVertexAttribPointer(i, element.Count, SwitchShaderDataTypeToOpenGLBaseType(element.Type),
-                                  element.Normalized, bufferLayout.GetStride(), (const void*)element.Offset);
+        {
+            auto& bufferLayout = m_VertexBuffer->GetLayout();
+            int index          = 0;
+            for (auto& element : bufferLayout.GetElements()) {
+                glEnableVertexAttribArray(index);
+                // clang-format off
+            glVertexAttribPointer(
+                index, 
+                element.GetComponentCount(), 
+                SwitchShaderDataTypeToOpenGLBaseType(element.Type),
+                element.Normalized ? GL_TRUE : GL_FALSE, 
+                bufferLayout.GetStride(), 
+                (const void*)element.Offset
+            );
+                // clang-format on
+                ++index;
+            }
         }
 
         std::string vertexSrc = R"(
-			#version 460 core
+            #version 460 core
+            
+            layout(location = 0) in vec3 a_Position;
+            layout(location = 1) in vec4 a_Color;
+            
+            out vec3 v_Position;
+            out vec4 v_Color;
 
-			layout(location = 0) in vec3 a_Position;
-
-			out vec3 v_Position;
-
-			void main() {
-				v_Position = a_Position;
-				gl_Position = vec4(a_Position, 1.0);
-			}
-		)";
+            void main() {
+                v_Position = a_Position;
+                v_Color = a_Color;
+                gl_Position = vec4(a_Position, 1.0);
+            }
+        )";
 
         std::string fragmentSrc = R"(
-			#version 460 core
-
-			layout(location = 0) out vec4 color;
-
-			in vec3 v_Position;
-
-			void main() {
-				color = vec4(v_Position * 0.5 + 0.5, 1.0);
-			}
-		)";
+            #version 460 core
+            
+            layout(location = 0) out vec4 color;
+            
+            in vec3 v_Position;
+            in vec4 v_Color;
+            
+            void main() {
+                color = vec4(v_Position * 0.5 + 0.5, 1.0);
+                color = v_Color;
+            }
+        )";
 
         m_Shader.reset(Shader::Create(vertexSrc, fragmentSrc));
     }
