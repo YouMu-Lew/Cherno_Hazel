@@ -1,0 +1,1 @@
+- [ ] clang-format: `case` not new line.

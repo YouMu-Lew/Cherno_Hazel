@@ -8,6 +8,29 @@
 
 namespace Hazel {
 
+    static GLenum SwitchShaderDataTypeToOpenGLBaseType(ShaderDataType type)
+    {
+        switch (type) {
+            case ShaderDataType::Float:
+            case ShaderDataType::Float2:
+            case ShaderDataType::Float3:
+            case ShaderDataType::Float4:
+                return GL_FLOAT;
+            case ShaderDataType::Mat3:
+            case ShaderDataType::Mat4:
+                return GL_FLOAT;
+            case ShaderDataType::Int:
+            case ShaderDataType::Int2:
+            case ShaderDataType::Int3:
+            case ShaderDataType::Int4:
+                return GL_INT;
+            case ShaderDataType::Bool:
+                return GL_BOOL;
+        }
+        HZ_CORE_ASSERT(false, "Unknown ShaderDataType.");
+        return 0;
+    }
+
     Application* Application::s_Instance = nullptr;
 
     Application::Application()
@@ -40,12 +63,16 @@ namespace Hazel {
 
         m_IndexBuffer.reset(IndexBuffer::Create(indices, 3));
 
-        VertexBufferLayout layout = {{ShaderDataType::Float3, "a_Position"}, {ShaderDataType::Float4, "a_Color"}};
-
-        m_VertexBuffer->SetLayout(layout);
+        {
+            VertexBufferLayout layout = {
+                {ShaderDataType::Float3, "a_Position"}, 
+                //{ShaderDataType::Float4, "a_Color"}
+            };
+            m_VertexBuffer->SetLayout(layout);
+        }
 
         // 启用顶点属性索引0，表示该属性将被传递给着色器
-        glEnableVertexAttribArray(0);
+        // glEnableVertexAttribArray(0);
         // 配置顶点属性指针，定义如何从VBO中读取顶点数据：
         // - 索引为0
         // - 每个顶点包含3个分量（x, y, z）
@@ -53,7 +80,16 @@ namespace Hazel {
         // - 不进行归一化处理（GL_FALSE）
         // - 顶点之间的步长为3 * sizeof(float)
         // - 数据偏移量为nullptr（从缓冲区的起始位置开始）
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+
+        auto& bufferLayout = m_VertexBuffer->GetLayout();
+        for (auto i = 0; i < bufferLayout.GetElements().size(); ++i) {
+            auto& element = bufferLayout.GetElements()[i];
+
+            glEnableVertexAttribArray(i);
+            glVertexAttribPointer(i, element.Count, SwitchShaderDataTypeToOpenGLBaseType(element.Type),
+                                  element.Normalized, bufferLayout.GetStride(), (const void*)element.Offset);
+        }
 
         std::string vertexSrc = R"(
 			#version 460 core
