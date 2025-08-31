@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "hzpch.h"
-
 namespace Hazel {
 
     class HAZEL_API Input {

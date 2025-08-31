@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-#include "Hazel\Window.h"
-
 #include "Hazel\Renderer\GraphicsContext.h"
 #include "Platform\OpenGL\OpenGLContext.h"
 
 #include <GLFW\glfw3.h>
+
+import Window;
 
 namespace Hazel {
 

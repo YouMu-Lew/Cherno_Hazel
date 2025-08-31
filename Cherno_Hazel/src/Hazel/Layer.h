@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <string>
+
 #include "Hazel/Core.h"
 
 import Event;

@@ -1,7 +1,8 @@
 ﻿#pragma once
 
+#include <memory>
+
 #include "core.h"
-#include "Window.h"
 
 #include "Hazel\LayerStack.h"
 #include "Hazel\ImGui\ImGuiLayer.h"
@@ -10,6 +11,8 @@ import Event;
 import Buffer;
 import Shader;
 import ApplicationEvent;
+import VertexArray;
+import Window;
 
 namespace Hazel {
 
@@ -38,10 +41,11 @@ namespace Hazel {
         bool m_Running = true;
         Hazel::LayerStack m_LayerStack;
 
-        unsigned int m_VertexArray;
         std::unique_ptr<Shader> m_Shader;
-        std::unique_ptr<VertexBuffer> m_VertexBuffer;
-        std::unique_ptr<IndexBuffer> m_IndexBuffer;
+        std::unique_ptr<VertexArray> m_VertexArray;
+
+        std::unique_ptr<Shader> m_BlueShader;
+        std::unique_ptr<VertexArray> m_SquareVA;
 
     private:
         static Application* s_Instance;

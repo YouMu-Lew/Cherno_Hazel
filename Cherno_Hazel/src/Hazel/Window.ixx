@@ -1,10 +1,10 @@
-﻿#pragma once
-
-#include "hzpch.h"
+﻿#include "hzpch.h"
 
 import Event;
 
-namespace Hazel {
+export module Window;
+
+export namespace Hazel {
 
     struct WindowProps
     {

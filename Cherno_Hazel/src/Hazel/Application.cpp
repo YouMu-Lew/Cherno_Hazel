@@ -8,25 +8,6 @@
 
 namespace Hazel {
 
-    static GLenum SwitchShaderDataTypeToOpenGLBaseType(ShaderDataType type)
-    {
-        switch (type) {
-            case ShaderDataType::Float:
-            case ShaderDataType::Float2:
-            case ShaderDataType::Float3:
-            case ShaderDataType::Float4: return GL_FLOAT;
-            case ShaderDataType::Mat3:
-            case ShaderDataType::Mat4: return GL_FLOAT;
-            case ShaderDataType::Int:
-            case ShaderDataType::Int2:
-            case ShaderDataType::Int3:
-            case ShaderDataType::Int4: return GL_INT;
-            case ShaderDataType::Bool: return GL_BOOL;
-        }
-        HZ_CORE_ASSERT(false, "Unknown ShaderDataType.");
-        return 0;
-    }
-
     Application* Application::s_Instance = nullptr;
 
     Application::Application()
@@ -39,66 +20,40 @@ namespace Hazel {
 
         m_ImGuiLayer = new Hazel::ImGuiLayer();
         PushOverlay(m_ImGuiLayer);
-
-        // 生成一个顶点数组对象（VAO），用于保存顶点数据和属性配置的状态
-        glGenVertexArrays(1, &m_VertexArray);
-        // 绑定VAO，使其成为当前活动的顶点数组对象
-        glBindVertexArray(m_VertexArray);
-
-        // 定义一个包含3个顶点的数组，每个顶点有3个浮点数（x, y, z坐标）
-        float vertices[3 * 7] = {
-            -0.5f, -0.5f, 0.0f, 0.5f, 0.8f, 0.4f, 0.0f, // 第一个顶点
-            -0.0f, 0.5f,  0.0f, 0.0f, 0.1f, 0.3f, 0.0f, // 第二个顶点
-            0.5f,  -0.5f, 0.0f, 0.5f, 0.4f, 0.9f, 0.0f, // 第三个顶点
-        };
-
-        m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-
-        // 定义一个包含3个索引的数组，用于指定顶点的绘制顺序
-        uint32_t indices[3] = {0, 1, 2};
-
-        m_IndexBuffer.reset(IndexBuffer::Create(indices, 3));
-
         {
-            BufferLayout layout = {
-                {ShaderDataType::Float3, "a_Position"},
-                {ShaderDataType::Float4,    "a_Color"},
+            /**
+             * Triangle
+             */
+
+            // 生成一个顶点数组对象（VAO），用于保存顶点数据和属性配置的状态
+            m_VertexArray.reset(VertexArray::Create());
+
+            // 定义一个包含3个顶点的数组，每个顶点有3个浮点数（x, y, z坐标）
+            float vertices[3 * 7] = {
+                -0.5f, -0.5f, 0.0f, 0.5f, 0.8f, 0.4f, 0.0f, // 第一个顶点
+                -0.0f, 0.5f,  0.0f, 0.0f, 0.1f, 0.3f, 0.0f, // 第二个顶点
+                0.5f,  -0.5f, 0.0f, 0.5f, 0.4f, 0.9f, 0.0f, // 第三个顶点
             };
-            m_VertexBuffer->SetLayout(layout);
-        }
 
-        // 启用顶点属性索引0，表示该属性将被传递给着色器
-        // glEnableVertexAttribArray(0);
-
-        // 配置顶点属性指针，定义如何从VBO中读取顶点数据：
-        // - 索引为0
-        // - 每个顶点包含3个分量（x, y, z）
-        // - 数据类型为GL_FLOAT
-        // - 不进行归一化处理（GL_FALSE）
-        // - 顶点之间的步长为3 * sizeof(float)
-        // - 数据偏移量为nullptr（从缓冲区的起始位置开始）
-        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-
-        {
-            auto& bufferLayout = m_VertexBuffer->GetLayout();
-            int index          = 0;
-            for (auto& element : bufferLayout.GetElements()) {
-                glEnableVertexAttribArray(index);
-                // clang-format off
-            glVertexAttribPointer(
-                index, 
-                element.GetComponentCount(), 
-                SwitchShaderDataTypeToOpenGLBaseType(element.Type),
-                element.Normalized ? GL_TRUE : GL_FALSE, 
-                bufferLayout.GetStride(), 
-                (const void*)element.Offset
-            );
-                // clang-format on
-                ++index;
+            std::shared_ptr<VertexBuffer> vertexBuffer;
+            vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+            {
+                BufferLayout layout = {
+                    {ShaderDataType::Float3, "a_Position"},
+                    {ShaderDataType::Float4,    "a_Color"},
+                };
+                vertexBuffer->SetLayout(layout);
             }
-        }
+            m_VertexArray->AddVertexBuffer(vertexBuffer);
 
-        std::string vertexSrc = R"(
+            // 定义一个包含3个索引的数组，用于指定顶点的绘制顺序
+            uint32_t indices[3] = {0, 1, 2};
+
+            std::shared_ptr<IndexBuffer> indexBuffer;
+            indexBuffer.reset((IndexBuffer::Create(indices, 3)));
+            m_VertexArray->SetIndexBuffer(indexBuffer);
+
+            std::string vertexSrc = R"(
             #version 460 core
             
             layout(location = 0) in vec3 a_Position;
@@ -114,7 +69,7 @@ namespace Hazel {
             }
         )";
 
-        std::string fragmentSrc = R"(
+            std::string fragmentSrc = R"(
             #version 460 core
             
             layout(location = 0) out vec4 color;
@@ -128,7 +83,65 @@ namespace Hazel {
             }
         )";
 
-        m_Shader.reset(Shader::Create(vertexSrc, fragmentSrc));
+            m_Shader.reset(Shader::Create(vertexSrc, fragmentSrc));
+        }
+        {
+            /**
+             * Square
+             */
+
+            m_SquareVA.reset(VertexArray::Create());
+
+            float vertices[3 * 4] = {
+                -0.6f, -0.6f, 0.0f, //
+                -0.6f, 0.6f,  0.0f, //
+                0.6f,  0.6f,  0.0f, //
+                0.6f,  -0.6f, 0.0f, //
+            };
+
+            std::shared_ptr<VertexBuffer> vertexBuffer;
+            vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+            vertexBuffer->SetLayout({
+                {ShaderDataType::Float3, "a_Position"},
+            });
+            m_SquareVA->AddVertexBuffer(vertexBuffer);
+
+            uint32_t indices[6] = {
+                0, 1, 2, //
+                0, 2, 3, //
+            };
+
+            std::shared_ptr<IndexBuffer> indexBuffer;
+            indexBuffer.reset((IndexBuffer::Create(indices, 6)));
+            m_SquareVA->SetIndexBuffer(indexBuffer);
+
+            std::string vertexSrc = R"(
+            #version 460 core
+            
+            layout(location = 0) in vec3 a_Position;
+            
+            out vec3 v_Position;
+
+            void main() {
+                v_Position = a_Position;
+                gl_Position = vec4(a_Position, 1.0);
+            }
+        )";
+
+            std::string fragmentSrc = R"(
+            #version 460 core
+            
+            layout(location = 0) out vec4 color;
+            
+            in vec3 v_Position;
+            
+            void main() {
+                color = vec4(0.1, 0.1, 0.7, 1.0);
+            }
+        )";
+
+            m_BlueShader.reset(Shader::Create(vertexSrc, fragmentSrc));
+        }
     }
 
     Application::~Application() {}
@@ -166,11 +179,13 @@ namespace Hazel {
             // glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             // glClear(GL_COLOR_BUFFER_BIT);
 
+            m_BlueShader->Bind();
+            m_SquareVA->Bind();
+            glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+
             m_Shader->Bind();
-            m_VertexBuffer->Bind();
-            m_IndexBuffer->Bind();
-            glBindVertexArray(m_VertexArray);
-            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+            m_VertexArray->Bind();
+            glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
             for (Layer* layer : m_LayerStack)
                 layer->OnUpdate();
