@@ -1,11 +1,8 @@
-﻿#pragma once
-
-#include <memory>
+﻿#include "hzpch.h"
 
 #include "core.h"
 
-#include "Hazel\LayerStack.h"
-#include "Hazel\ImGui\ImGuiLayer.h"
+export module Application;
 
 import Event;
 import Buffer;
@@ -13,8 +10,11 @@ import Shader;
 import ApplicationEvent;
 import VertexArray;
 import Window;
+import Layer;
+import LayerStack;
+import ImGuiLayer;
 
-namespace Hazel {
+export namespace Hazel {
 
     class HAZEL_API Application {
     public:

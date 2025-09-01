@@ -1,7 +1,48 @@
 ﻿#include "hzpch.h"
-#include "OpenGLBuffer.h"
 
 #include <glad\glad.h>
+
+export module OpenGLBuffer;
+
+import Buffer;
+
+export namespace Hazel {
+
+    class OpenGLVertexBuffer : public VertexBuffer {
+    public:
+        OpenGLVertexBuffer(float* vertices, uint32_t size);
+        virtual ~OpenGLVertexBuffer();
+
+        virtual void Bind() const override;
+        virtual void Unbind() const override;
+        virtual void SetLayout(const BufferLayout& layout) override { m_Layout = layout; }
+        virtual const BufferLayout& GetLayout() const override { return m_Layout; }
+
+    private:
+        uint32_t m_RendererID;
+        BufferLayout m_Layout;
+    };
+
+    class OpenGLIndexBuffer : public IndexBuffer {
+    public:
+        OpenGLIndexBuffer(uint32_t* indices, uint32_t count);
+        virtual ~OpenGLIndexBuffer();
+
+        virtual void Bind() const;
+        virtual void Unbind() const;
+
+        virtual uint32_t GetCount() const { return m_Count; }
+
+    private:
+        uint32_t m_RendererID;
+        uint32_t m_Count;
+    };
+
+} // namespace Hazel
+
+/**
+ * Implementation
+ */
 
 namespace Hazel {
 
@@ -36,9 +77,9 @@ namespace Hazel {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    // ----------- //
-    // IndexBuffer //
-    // ----------- //
+    /**
+     * IndexBuffer
+     */
 
     OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count) : m_Count(count)
     {

@@ -1,17 +1,15 @@
-﻿#pragma once
+﻿#include "hzpch.h"
 
-#include <string>
-
-#include "Hazel/Core.h"
+export module Layer;
 
 import Event;
 
-namespace Hazel {
+export namespace Hazel {
 
     class HAZEL_API Layer {
     public:
-        Layer(const std::string& name = "Layer");
-        virtual ~Layer();
+        Layer(const std::string& name = "Layer") : m_DebugName(name) {}
+        virtual ~Layer() {}
 
         virtual void OnAttach() {}
         virtual void OnDetach() {}

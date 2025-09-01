@@ -1,8 +1,10 @@
-﻿#pragma once
+﻿#include "hzpch.h"
 
-#include "Hazel\Input.h"
+export module WindowsInput;
 
-namespace Hazel {
+import Input;
+
+export namespace Hazel {
 
     class WindowsInput : public Input {
     protected:

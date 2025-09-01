@@ -1,13 +1,14 @@
-﻿#pragma once
-
-#include "Hazel\Renderer\GraphicsContext.h"
-#include "Platform\OpenGL\OpenGLContext.h"
+﻿#include "hzpch.h"
 
 #include <GLFW\glfw3.h>
 
-import Window;
+export module WindowsWindow;
 
-namespace Hazel {
+import Window;
+import GraphicsContext;
+import OpenGLContext;
+
+export namespace Hazel {
 
     class WindowsWindow : public Window {
     public:

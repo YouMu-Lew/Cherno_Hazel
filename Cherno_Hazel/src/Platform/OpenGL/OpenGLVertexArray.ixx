@@ -1,4 +1,4 @@
-#include "hzpch.h"
+﻿#include "hzpch.h"
 
 import VertexArray;
 import Buffer;
@@ -32,7 +32,7 @@ export namespace Hazel {
 } // namespace Hazel
 
 /**
- * implementation
+ * Implementation
  */
 
 namespace Hazel {

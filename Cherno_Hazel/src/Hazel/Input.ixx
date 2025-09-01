@@ -1,6 +1,8 @@
-﻿#pragma once
+﻿#include "hzpch.h"
 
-namespace Hazel {
+export module Input;
+
+export namespace Hazel {
 
     class HAZEL_API Input {
     public:

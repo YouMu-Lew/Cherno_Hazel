@@ -1,12 +1,16 @@
 ﻿#pragma once
 
+import Application;
+import Layer;
+import Input;
+
 // For use by Hazel Applications
 
-#include "Hazel\Application.h"
-#include "Hazel\Layer.h"
+//#include "Hazel\Application.h"
+//#include "Hazel\Layer.h"
 #include "Hazel\Log.h"
 
-#include "Hazel\Input.h"
+// #include "Hazel\Input.h"
 #include "Hazel\Codes\KeyCodes.h"
 #include "Hazel\Codes\MouseButtonCodes.h"
 

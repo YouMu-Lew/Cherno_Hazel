@@ -1,12 +1,10 @@
-﻿#pragma once
+﻿#include "hzpch.h"
 
-#include "Hazel/Layer.h"
+export module ImGuiLayer;
 
-import ApplicationEvent;
-import KeyEvent;
-import MouseEvent;
+import Layer;
 
-namespace Hazel {
+export namespace Hazel {
 
     class HAZEL_API ImGuiLayer : public Layer {
     public:

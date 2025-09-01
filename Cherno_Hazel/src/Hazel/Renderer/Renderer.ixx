@@ -1,11 +1,11 @@
-#include "hzpch.h"
+﻿#include "hzpch.h"
 
 export module Renderer;
 
 export namespace Hazel {
 
     enum class RendererAPI {
-        None   = 0,
+        None = 0,
         OpenGL = 1,
     };
 

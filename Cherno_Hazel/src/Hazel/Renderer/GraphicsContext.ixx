@@ -1,6 +1,8 @@
-﻿#pragma once
+﻿#include "hzpch.h"
 
-namespace Hazel {
+export module GraphicsContext;
+
+export namespace Hazel {
 
     class GraphicsContext {
     public:

@@ -1,10 +1,10 @@
-﻿#pragma once
+﻿#include "hzpch.h"
 
-#include <vector>
+export module LayerStack;
 
-#include "Layer.h"
+import Layer;
 
-namespace Hazel {
+export namespace Hazel {
 
     class HAZEL_API LayerStack {
     public:
