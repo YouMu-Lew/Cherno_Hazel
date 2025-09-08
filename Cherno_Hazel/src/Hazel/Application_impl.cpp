@@ -1,8 +1,10 @@
 ﻿#include "hzpch.h"
 #include "core.h"
-#include <glad\glad.h>
 
 module Application;
+
+import Renderer;
+import RenderCommand;
 
 namespace Hazel {
 
@@ -91,10 +93,10 @@ namespace Hazel {
             m_SquareVA.reset(VertexArray::Create());
 
             float vertices[3 * 4] = {
-                -0.6f, -0.6f, 0.0f, //
-                -0.6f, 0.6f,  0.0f, //
-                0.6f,  0.6f,  0.0f, //
-                0.6f,  -0.6f, 0.0f, //
+                -0.65f, -0.65f, 0.0f, //
+                -0.65f, 0.65f,  0.0f, //
+                0.65f,  0.65f,  0.0f, //
+                0.65f,  -0.65f, 0.0f, //
             };
 
             std::shared_ptr<VertexBuffer> vertexBuffer;
@@ -134,7 +136,7 @@ namespace Hazel {
             in vec3 v_Position;
             
             void main() {
-                color = vec4(0.1, 0.1, 0.7, 1.0);
+                color = vec4(0.15, 0.15, 0.5, 0.5);
             }
         )";
 
@@ -177,13 +179,26 @@ namespace Hazel {
             // glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             // glClear(GL_COLOR_BUFFER_BIT);
 
+            // m_BlueShader->Bind();
+            // m_SquareVA->Bind();
+            // glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+
+            // m_Shader->Bind();
+            // m_VertexArray->Bind();
+            // glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+
+            RenderCommand::SetClearColor({0.7f, 0.15f, 0.15f, 1.0f});
+            RenderCommand::Clear();
+
+            Renderer::BeginScene();
+
             m_BlueShader->Bind();
-            m_SquareVA->Bind();
-            glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::Submit(m_SquareVA);
 
             m_Shader->Bind();
-            m_VertexArray->Bind();
-            glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::Submit(m_VertexArray);
+
+            Renderer::EndScene();
 
             for (Layer* layer : m_LayerStack)
                 layer->OnUpdate();

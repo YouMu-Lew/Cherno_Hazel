@@ -1,4 +1,4 @@
-#include "hzpch.h"
+﻿#include "hzpch.h"
 
 module Shader;
 
@@ -10,12 +10,12 @@ namespace Hazel {
     Shader* Shader::Create(const std::string& vertexSrc, const std::string& fragmentSrc)
     {
         switch (Renderer::GetAPI()) {
-            case (RendererAPI::None):
+            case (RendererAPI::API::None):
             {
-                HZ_CORE_ASSERT(false, "RendererAPI::None is not supported now.");
+                HZ_CORE_ASSERT(false, "RendererAPI::API::None is not supported now.");
                 return nullptr;
             }
-            case RendererAPI::OpenGL:
+            case RendererAPI::API::OpenGL:
             {
                 return new OpenGLShader(vertexSrc, fragmentSrc);
             }

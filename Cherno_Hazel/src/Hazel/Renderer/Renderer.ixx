@@ -2,21 +2,19 @@
 
 export module Renderer;
 
-export namespace Hazel {
+import RendererAPI;
+import VertexArray;
 
-    enum class RendererAPI {
-        None = 0,
-        OpenGL = 1,
-    };
+export namespace Hazel {
 
     class Renderer {
     public:
-        inline static RendererAPI GetAPI() { return s_RendererAPI; }
+        inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 
-    private:
-        static RendererAPI s_RendererAPI;
+        static void BeginScene();
+        static void EndScene();
+
+        static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
     };
-
-    RendererAPI Renderer::s_RendererAPI = RendererAPI::OpenGL;
 
 } // namespace Hazel
