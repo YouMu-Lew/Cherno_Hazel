@@ -7,7 +7,7 @@ AlignOperands: Align
 AllowShortBlocksOnASingleLine: Empty
 AllowShortFunctionsOnASingleLine: Inline
 BasedOnStyle: LLVM
-ColumnLimit: 120
+ColumnLimit: 100
 Language: Cpp
 PointerAlignment: Left
 SortIncludes: false
