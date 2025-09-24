@@ -13,6 +13,7 @@ import Window;
 import Layer;
 import LayerStack;
 import ImGuiLayer;
+import OrthographicCamera;
 
 export namespace Hazel {
 
@@ -23,7 +24,7 @@ export namespace Hazel {
 
         void OnEvent(Event&);
 
-        void Run();
+        virtual void Run();
 
         void PushLayer(Layer* layer);
         void PushOverlay(Layer* overlay);
@@ -32,13 +33,11 @@ export namespace Hazel {
 
         inline static Application& Get() { return *s_Instance; }
 
-    private:
-        bool OnWindowCloseEvent(WindowCloseEvent& event);
-        bool OnWindowResizeEvent(WindowResizeEvent& event);
-
-        std::unique_ptr<Hazel::Window> m_Window;
-        Hazel::ImGuiLayer* m_ImGuiLayer;
+    protected:
         bool m_Running = true;
+        std::unique_ptr<Hazel::Window> m_Window;
+
+        Hazel::ImGuiLayer* m_ImGuiLayer;
         Hazel::LayerStack m_LayerStack;
 
         std::shared_ptr<Shader> m_Shader;
@@ -46,6 +45,12 @@ export namespace Hazel {
 
         std::shared_ptr<Shader> m_BlueShader;
         std::shared_ptr<VertexArray> m_SquareVA;
+
+        OrthographicCamera m_Camera;
+
+    private:
+        bool OnWindowCloseEvent(WindowCloseEvent& event);
+        bool OnWindowResizeEvent(WindowResizeEvent& event);
 
     private:
         static Application* s_Instance;

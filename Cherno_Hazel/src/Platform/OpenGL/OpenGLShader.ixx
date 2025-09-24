@@ -1,6 +1,8 @@
 ﻿#include "hzpch.h"
 
 #include <glad\glad.h>
+#include <glm\glm.hpp>
+#include <glm\gtc\type_ptr.hpp>
 
 export module OpenGLShader;
 
@@ -16,6 +18,8 @@ export namespace Hazel {
 
         virtual void Bind() const { glUseProgram(m_RendererID); }
         virtual void Unbind() const { glUseProgram(0); }
+
+        virtual void UploadUniformMat4(const std::string& name, const glm::mat4& matrix) override;
 
     private:
         uint32_t m_RendererID;
@@ -140,4 +144,11 @@ namespace Hazel {
         glDetachShader(program, vertexShader);
         glDetachShader(program, fragmentShader);
     }
+
+    void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
+    {
+        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+
 } // namespace Hazel
