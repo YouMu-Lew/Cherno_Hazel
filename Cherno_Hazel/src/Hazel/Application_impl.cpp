@@ -180,31 +180,18 @@ namespace Hazel {
     void Application::Run()
     {
         while (m_Running) {
-            // glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            // glClear(GL_COLOR_BUFFER_BIT);
-
-            // m_BlueShader->Bind();
-            // m_SquareVA->Bind();
-            // glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(),
-            // GL_UNSIGNED_INT, nullptr);
-
-            // m_Shader->Bind();
-            // m_VertexArray->Bind();
-            // glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(),
-            // GL_UNSIGNED_INT, nullptr);
 
             RenderCommand::SetClearColor({0.2f, 0.15f, 0.15f, 1.0f});
             RenderCommand::Clear();
 
-            Renderer::BeginScene();
+            m_Camera.SetPostion({0.5f, 0.5f, 0.0f});
+            m_Camera.SetRotation(45.0f);
 
-            m_BlueShader->Bind();
-            m_BlueShader->UploadUniformMat4("u_ViewProjection", m_Camera.GetViewProjectionMatrix());
-            Renderer::Submit(m_SquareVA);
+            Renderer::BeginScene(m_Camera);
 
-            m_Shader->Bind();
-            m_Shader->UploadUniformMat4("u_ViewProjection", m_Camera.GetViewProjectionMatrix());
-            Renderer::Submit(m_VertexArray);
+            Renderer::Submit(m_BlueShader, m_SquareVA);
+
+            Renderer::Submit(m_Shader, m_VertexArray);
 
             Renderer::EndScene();
 
